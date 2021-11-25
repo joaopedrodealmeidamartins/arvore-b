@@ -59,3 +59,6 @@ int main () {
 
 // gcc pagina.c -o createBTree
 // .\createBTree.exe
+
+// byteOffset = (raiz*sizeOf(pagina)) + sizeOf(int)
+//2212-1-1-1-1-114-1-1-1-1-1-113-1-101-1-1
