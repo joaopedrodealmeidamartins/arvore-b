@@ -14,7 +14,7 @@ int main () {
     FILE *arq;
     int rrn = 2;
 
-    if ((arq = fopen("teste.txt", "w")) == NULL) {
+    if ((arq = fopen("btree.dat", "wb")) == NULL) {
         printf("Erro na criacao do arquivo --- programa abortado\n");
         exit(1);
     }
