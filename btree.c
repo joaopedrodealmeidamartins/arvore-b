@@ -56,6 +56,7 @@ int busca( int rrn, int chave, int *rrn_encontrado, int *pos_encontrado) {
             *pos_encontrado = pos;
             printf("Chave encontrada!!!\n");
         } else { 
+            printf("Chave não encontrada!!!\n");
             return (busca(pag.filho[pos], chave, rrn_encontrado, pos_encontrado));
         }
     }
@@ -93,10 +94,17 @@ int insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
     if (encontrada) {
         printf("Chave duplicada!!!\n");
         return ERRO;
-    }
-    int retorno = insere(pag.filho[pos], chave, &rrn_pro, &chv_pro);
-    
+    } else {
+        int retorno = insere(pag.filho[pos], chave, &rrn_pro, &chv_pro);
+        if (retorno == SEM_PROMOCAO || retorno == ERRO) {
+            return retorno;
+        } else {
+            if (pag.conta_chaves < 3) {
 
+            }
+        }
+    }
+    
 }
 
 Pagina le_pagina(int rrn) {
