@@ -5,6 +5,9 @@
 #define ORDEM 4
 #define TRUE 1
 #define FALSE 0
+#define PROMOCAO 1
+#define SEM_PROMOCAO 2
+#define ERRO 0
 
 typedef struct {
     int conta_chaves;
@@ -21,7 +24,7 @@ FILE *arq;
 Pagina le_pagina(int rrn);
 int busca(int, int, int *, int *);
 int busca_na_pagina(int, Pagina, int *);
-void insere(int, int, int *, int *);
+int insere(int, int, int *, int *);
 
 
 int main(int argc, char *argv[]) {
@@ -71,21 +74,27 @@ int busca_na_pagina(int chave, Pagina pag, int *pos) {
     }
 }
 
-void insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
+int insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
    Pagina pag;
     Pagina nova_pag;
 
     int pos = 0;
-    int rrr_pro;
+    int rrn_pro;
     int chv_pro;
 
     if (rrn_atual == EOF) {
         *chave_pro = chave;
         *filho_d_pro = -1;
+        return PROMOCAO;
     } else {
         pag = le_pagina(rrn_atual);
         encontrada = busca_na_pagina(chave, pag, &pos);
     }
+    if (encontrada) {
+        printf("Chave duplicada!!!\n");
+        return ERRO;
+    }
+    int retorno = insere(pag.filho[pos], chave, &rrn_pro, &chv_pro);
     
 
 }
