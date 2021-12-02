@@ -15,15 +15,17 @@ typedef struct {
     int filho[ORDEM];
 } Pagina;
 
-int encontrada;
+int *encontrada;
 int rrn_encontrado = 0;
 int pos_encontrado = 0;
 
 FILE *arq;
+Pagina pag;
 
-Pagina le_pagina(int rrn);
-int busca(int, int, int *, int *);
-int busca_na_pagina(int, Pagina, int *);
+void le_pagina(int rrn);
+int busca(int, int);
+/* int busca(int, int, int *, int *);
+int busca_na_pagina(int, Pagina, int *); */
 int insere(int, int, int *, int *);
 
 
@@ -35,34 +37,69 @@ int main(int argc, char *argv[]) {
 
     int rrn;
     fread(&rrn, sizeof(int), 1, arq);
-    printf("rrn: %i\n", rrn);
 
     if (argc == 3 && strcmp(argv[1], "-b") == 0) {
-        busca(rrn, atoi(argv[2]), &rrn_encontrado, &pos_encontrado);
+        if (atoi(argv[2]) == busca(rrn, atoi(argv[2]))) {
+            printf("CHAAAAMA\n");
+        } else {
+            printf("NAO CHAAAAMA\n");
+        }
+        //busca(rrn, atoi(argv[2]), &rrn_encontrado, &pos_encontrado);
     }
 
 }
 
-int busca( int rrn, int chave, int *rrn_encontrado, int *pos_encontrado) {
+int busca(int rrn, int chave) {
+    le_pagina(rrn);
+
+    int i = 0;
+    while (i < pag.conta_chaves) {
+        if (chave == pag.chave[i]) {
+            printf("Chave encontrada!!!\n");
+            break;
+        } else {
+            printf("Chave nao encontrada!!!\n");
+            if (pag.filho[i] == -1) {
+                return 0;
+            } else {
+                if (chave > pag.chave[i]) {
+                    busca(pag.filho[i+1], chave);
+                } else {
+                    busca(pag.filho[i], chave);
+                }
+            }
+        }
+        i++;
+    }
+
+    return pag.chave[i];    
+}
+
+//gcc btree.c -o btree
+//.\btree.exe -b 2
+
+/* int busca( int rrn, int chave, int *rrn_encontrado, int *pos_encontrado) {
+    printf("rrn: %i\n", rrn);
     Pagina pag = le_pagina(rrn);
     if (rrn == EOF) {
         return FALSE;
     } else {
         int pos = 0;
         
+        //le_pagina(rrn);
         encontrada = busca_na_pagina(chave, pag, &pos);
         if (encontrada) {
             *rrn_encontrado = rrn;
             *pos_encontrado = pos;
             printf("Chave encontrada!!!\n");
         } else { 
-            printf("Chave não encontrada!!!\n");
+            printf("encontrada: %i\n", encontrada);
             return (busca(pag.filho[pos], chave, rrn_encontrado, pos_encontrado));
         }
     }
-}
+} */
 
-int busca_na_pagina(int chave, Pagina pag, int *pos) {
+/* int busca_na_pagina(int chave, Pagina pag, int *pos) {
     int i = 0;
     while (i < pag.conta_chaves && chave > pag.chave[i]) {
         i++;
@@ -73,10 +110,11 @@ int busca_na_pagina(int chave, Pagina pag, int *pos) {
             return FALSE;
         }
     }
-}
+    return FALSE;
+} */
 
-int insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
-   Pagina pag;
+/* int insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
+    Pagina pag;
     Pagina nova_pag;
 
     int pos = 0;
@@ -105,10 +143,9 @@ int insere(int rrn_atual, int chave, int *filho_d_pro, int *chave_pro) {
         }
     }
     
-}
+} */
 
-Pagina le_pagina(int rrn) {
-    Pagina pag;
+void le_pagina(int rrn) {
     int byteOffset = (rrn * sizeof(Pagina)) + sizeof(int);
     fseek(arq, byteOffset, SEEK_SET);
     fread(&pag.conta_chaves, sizeof(int), 1, arq);
@@ -129,8 +166,9 @@ Pagina le_pagina(int rrn) {
     printf("Filho 1: %i\n", pag.filho[1]);
     printf("Filho 2: %i\n", pag.filho[2]);
     printf("Filho 3: %i\n", pag.filho[3]);
+}
 
-    return pag;
+void escreve_pagina() {
 }
 
 //gcc btree.c -o btree
